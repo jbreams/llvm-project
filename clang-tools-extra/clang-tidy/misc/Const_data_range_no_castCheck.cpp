@@ -33,14 +33,16 @@ void Const_data_range_no_castCheck::check(const MatchFinder::MatchResult &Result
   for (const auto& arg: match->arguments()) {
       if (CXXReinterpretCastExpr::classof(arg)) {
           auto castArg = static_cast<const CXXReinterpretCastExpr*>(arg);
-          auto subExpr = castArg->getSubExprAsWritten();
-          auto replacementRange = Result.SourceManager->getExpansionRange(subExpr->getSourceRange());
-          auto replacement = Lexer::getSourceText(replacementRange,
-                                                  *Result.SourceManager,
-                                                  getLangOpts());
-          if (castArg->getSubExpr()->getType()->getPointeeType()->isCharType()) {
-              diag(match->getLocation(), "function %0 is insufficiently awesome")
-                  << FixItHint::CreateReplacement(castArg->getExprLoc(), replacement);
+          auto castToType = castArg->getSubExpr()->getType();
+          if (castToType->isPointerType() && castToType->getPointeeType()->isCharType()) {
+              auto subExpr = castArg->getSubExprAsWritten();
+              auto replacementRange = Result.SourceManager->getExpansionRange(subExpr->getSourceRange());
+              auto replacement = Lexer::getSourceText(replacementRange,
+                                                      *Result.SourceManager,
+                                                      getLangOpts());
+              diag(match->getLocation(),
+                   "Don't reinterpret_cast your arguments to ConstDataRange constructors")
+                  << FixItHint::CreateReplacement(castArg->getSourceRange(), replacement);
           }
       }
   }
