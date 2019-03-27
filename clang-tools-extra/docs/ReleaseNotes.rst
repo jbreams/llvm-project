@@ -130,6 +130,11 @@ Improvements to clang-tidy
   <clang-tidy/checks/modernize-use-override>` now supports `OverrideSpelling`
   and `FinalSpelling` options.
 
+- New :doc:`misc-const_data_range_no_cast
+  <clang-tidy/checks/misc-const_data_range_no_cast>` check.
+
+  FIXME: add release notes.
+
 - New :doc:`openmp-exception-escape
   <clang-tidy/checks/openmp-exception-escape>` check.
 

@@ -9,6 +9,7 @@
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
+#include "Const_data_range_no_castCheck.h"
 #include "DefinitionsInHeadersCheck.h"
 #include "MisplacedConstCheck.h"
 #include "NewDeleteOverloadsCheck.h"
@@ -30,6 +31,8 @@ namespace misc {
 class MiscModule : public ClangTidyModule {
 public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
+    CheckFactories.registerCheck<Const_data_range_no_castCheck>(
+        "misc-const_data_range_no_cast");
     CheckFactories.registerCheck<DefinitionsInHeadersCheck>(
         "misc-definitions-in-headers");
     CheckFactories.registerCheck<MisplacedConstCheck>("misc-misplaced-const");

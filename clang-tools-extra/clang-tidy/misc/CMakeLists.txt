@@ -1,6 +1,7 @@
 set(LLVM_LINK_COMPONENTS support)
 
 add_clang_library(clangTidyMiscModule
+  Const_data_range_no_castCheck.cpp
   DefinitionsInHeadersCheck.cpp
   MiscTidyModule.cpp
   MisplacedConstCheck.cpp
