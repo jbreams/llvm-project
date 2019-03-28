@@ -25,24 +25,47 @@ void Const_data_range_no_castCheck::registerMatchers(MatchFinder *Finder) {
           allOf(hasDeclaration(cxxConstructorDecl(
                       hasName("ConstDataRange"))),
                 hasAnyArgument(cxxReinterpretCastExpr()))).bind("cdr"), this);
+
+  Finder->addMatcher(
+      cxxConstructExpr(
+          allOf(hasDeclaration(cxxConstructorDecl(
+                      hasName("DataRange"))),
+                hasAnyArgument(cxxReinterpretCastExpr()))).bind("dr"), this);
+
+  Finder->addMatcher(
+      cxxConstructExpr(
+          allOf(hasDeclaration(cxxConstructorDecl(
+                      hasName("ConstDataRangeCursor"))),
+                hasAnyArgument(cxxReinterpretCastExpr()))).bind("cdrc"), this);
+
+  Finder->addMatcher(
+      cxxConstructExpr(
+          allOf(hasDeclaration(cxxConstructorDecl(
+                      hasName("DataRangeCursor"))),
+                hasAnyArgument(cxxReinterpretCastExpr()))).bind("drc"), this);
 }
 
 void Const_data_range_no_castCheck::check(const MatchFinder::MatchResult &Result) {
   // FIXME: Add callback implementation.
-  const auto* match = Result.Nodes.getNodeAs<CXXConstructExpr>("cdr");
-  for (const auto& arg: match->arguments()) {
-      if (CXXReinterpretCastExpr::classof(arg)) {
-          auto castArg = static_cast<const CXXReinterpretCastExpr*>(arg);
-          auto castToType = castArg->getSubExpr()->getType();
-          if (castToType->isPointerType() && castToType->getPointeeType()->isCharType()) {
-              auto subExpr = castArg->getSubExprAsWritten();
-              auto replacementRange = Result.SourceManager->getExpansionRange(subExpr->getSourceRange());
-              auto replacement = Lexer::getSourceText(replacementRange,
-                                                      *Result.SourceManager,
-                                                      getLangOpts());
-              diag(match->getLocation(),
-                   "Don't reinterpret_cast your arguments to ConstDataRange constructors")
-                  << FixItHint::CreateReplacement(castArg->getSourceRange(), replacement);
+  for (const StringRef bind: { "cdr", "dr", "cdrc", "drc" }) {
+      const auto* match = Result.Nodes.getNodeAs<CXXConstructExpr>(bind);
+      if (!match) {
+          continue;
+      }
+      for (const auto& arg: match->arguments()) {
+          if (CXXReinterpretCastExpr::classof(arg)) {
+              auto castArg = static_cast<const CXXReinterpretCastExpr*>(arg);
+              auto castToType = castArg->getSubExpr()->getType();
+              if (castToType->isPointerType() && castToType->getPointeeType()->isCharType()) {
+                  auto subExpr = castArg->getSubExprAsWritten();
+                  auto replacementRange = Result.SourceManager->getExpansionRange(subExpr->getSourceRange());
+                  auto replacement = Lexer::getSourceText(replacementRange,
+                                                          *Result.SourceManager,
+                                                          getLangOpts());
+                  diag(match->getLocation(),
+                       "Don't reinterpret_cast your arguments to ConstDataRange constructors")
+                      << FixItHint::CreateReplacement(castArg->getSourceRange(), replacement);
+              }
           }
       }
   }
