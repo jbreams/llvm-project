@@ -135,6 +135,11 @@ Improvements to clang-tidy
 
   FIXME: add release notes.
 
+- New :doc:`misc-const_data_range_nothrow_conversion
+  <clang-tidy/checks/misc-const_data_range_nothrow_conversion>` check.
+
+  FIXME: add release notes.
+
 - New :doc:`openmp-exception-escape
   <clang-tidy/checks/openmp-exception-escape>` check.
 

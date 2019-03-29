@@ -10,6 +10,7 @@
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
 #include "Const_data_range_no_castCheck.h"
+#include "Const_data_range_nothrow_conversionCheck.h"
 #include "DefinitionsInHeadersCheck.h"
 #include "MisplacedConstCheck.h"
 #include "NewDeleteOverloadsCheck.h"
@@ -33,6 +34,8 @@ public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
     CheckFactories.registerCheck<Const_data_range_no_castCheck>(
         "misc-const_data_range_no_cast");
+    CheckFactories.registerCheck<Const_data_range_nothrow_conversionCheck>(
+        "misc-const_data_range_nothrow_conversion");
     CheckFactories.registerCheck<DefinitionsInHeadersCheck>(
         "misc-definitions-in-headers");
     CheckFactories.registerCheck<MisplacedConstCheck>("misc-misplaced-const");

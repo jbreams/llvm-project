@@ -180,6 +180,7 @@ Clang-Tidy Checks
    llvm-namespace-comment
    llvm-twine-local
    misc-const_data_range_no_cast
+   misc-const_data_range_nothrow_conversion
    misc-definitions-in-headers
    misc-misplaced-const
    misc-new-delete-overloads
